@@ -33,7 +33,7 @@ void GameMechs::generateFood(objPosArrayList* blockOff) //change
     blockOff->getHeadElement(temp0);
     do
     {
-        foodX = rand() % (boardSizeX - 2) + 1;
+        foodX = rand() % (boardSizeX - 2) + 1; //rand
         foodY = rand() % (boardSizeY - 2) + 1;
         // Generate a new position until it's free and not equal to blockOff position
     } while (foodX == temp0.x && foodY == temp0.y && foodX == getBoardSizeX() && foodY == getBoardSizeY());

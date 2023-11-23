@@ -26,7 +26,7 @@ void objPosArrayList::insertHead(objPos thisPos)
     {
         return;
     }
-    for(int i = sizeList; i>0; i--) //starts at one space after tail
+    for(int i = sizeList; i>0; i--) // starts at one space after tail
     {
         aList[i].setObjPos(aList[i-1]);
     }

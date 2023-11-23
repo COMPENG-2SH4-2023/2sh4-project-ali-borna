@@ -1,12 +1,5 @@
 #include "Player.h"
-/*
-Player::Player() //temporary
-{
-    playerPos.x = 7;
-    playerPos.y = 15;
-    playerPos.symbol = 42;
-}
-*/
+
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
@@ -146,14 +139,5 @@ void Player::movePlayer()
     }    
 }   
 
-void incPlayerLength()
-{
-
-}
-
-bool checkFoodConsumption()
-{
-
-}
 
 

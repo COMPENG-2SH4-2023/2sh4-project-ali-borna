@@ -110,7 +110,6 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }
-
     MacUILib_printf("Score: %d", myGM->getScore());
 
 }
@@ -123,9 +122,7 @@ void LoopDelay(void)
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
-    
     MacUILib_uninit();
-
     delete myGM;
     delete myPlayer;
 }

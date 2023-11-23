@@ -16,7 +16,7 @@
 	void MacUILib_clearScreen(void);
 	void MacUILib_uninit(void);
 
-	typedef int (*print_ptr)(const char*, ...);  // function pointer
+	typedef int (*print_ptr)(const char*, ...);  //function pointer
 	extern print_ptr MacUILib_printf;
 	
 #endif
