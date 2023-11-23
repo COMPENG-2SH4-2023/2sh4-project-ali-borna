@@ -30,7 +30,6 @@ void GameMechs::generateFood(objPosArrayList* blockOff) //change
 {
     int foodX, foodY, check=0;
     bool flag = false;
-    cout<<"OUTSIDE WHILE LOOP" << endl;
     while(flag==false)
     {
         objPos temp0;
@@ -51,15 +50,12 @@ void GameMechs::generateFood(objPosArrayList* blockOff) //change
                 break;
             }
         }
-        cout<<"OUTSIDE IF LOOP, check = " << check << endl;
 
         if(check==0)
         {
             flag = true;
             break;
-            cout<<"in break " << endl;
         }
-            cout<<"end of while loop " << endl;
     }
     foodPos.setObjPos(foodX, foodY, 'o');
 }
@@ -107,7 +103,6 @@ bool GameMechs::getLoseFlagStatus()
 void GameMechs::setLoseFlag()
 {
     loseFlag = true;
-    cout << "Game Over" << endl;
 }
 void GameMechs::setInput(char this_input)
 {

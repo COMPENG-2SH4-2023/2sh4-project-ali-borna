@@ -1,4 +1,7 @@
 #include "Player.h"
+#include <iostream>
+
+using namespace std;
 
 Player::Player(GameMechs* thisGMRef)
 {
@@ -136,12 +139,33 @@ void Player::movePlayer()
     {
         playerPosList->insertHead(currHead);
         playerPosList->removeTail();
+    }
+
+    if(checkSelfCollision(currHead)==true)
+    {
+        mainGameMechsRef->setLoseFlag();
+        mainGameMechsRef->setExitTrue();
     }    
 }   
 
-bool Player::checkSelfCollision()
+bool Player::checkSelfCollision(objPos &curr)
 {
-    
+    objPos temp2;
+
+    for(int i = playerPosList->getSize(); i > 0; i--)
+    {
+        playerPosList->getElement(temp2, i);
+
+        if(temp2.x == curr.x  && temp2.y == curr.y)
+        {
+            return true;
+        }
+        else
+        {
+            continue;
+        }
+    }
+    return false;
 }
 
 

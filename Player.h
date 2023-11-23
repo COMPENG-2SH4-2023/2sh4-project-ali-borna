@@ -26,7 +26,7 @@ class Player
         //don't need, for now...
         //void incPlayerLength();
         //bool checkFoodConsumption();
-        bool checkSelfCollision();
+        bool checkSelfCollision(objPos &curr);
 
     private:
         objPosArrayList* playerPosList;   // Upgrade this in iteration 3.       
