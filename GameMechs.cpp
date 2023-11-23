@@ -28,8 +28,38 @@ GameMechs::GameMechs(int boardX, int boardY)
 //Added:
 void GameMechs::generateFood(objPosArrayList* blockOff) //change
 {
-    int foodX, foodY;
-    objPos temp0;
+    int foodX, foodY, check=0;
+    bool flag = false;
+    
+    while(flag==false)
+    {
+        objPos temp0;
+        foodX = rand() % (boardSizeX - 2) + 1;
+        foodY = rand() % (boardSizeY - 2) + 1;
+
+        for(int i = 0; i < blockOff->getSize()-1; i++)
+        {
+            blockOff->getElement(temp0, i);
+            if(temp0.x == foodX || temp0.y == foodY)
+            {
+                check=1;
+                break;
+            }
+            else
+            {
+                check = 0;
+            }
+        }
+
+        if(check==0)
+        {
+            flag = true;
+        }
+    }
+
+    foodPos.setObjPos(foodX, foodY, 'o');
+
+/*
     blockOff->getHeadElement(temp0);
     do
     {
@@ -38,7 +68,8 @@ void GameMechs::generateFood(objPosArrayList* blockOff) //change
         // Generate a new position until it's free and not equal to blockOff position
     } while (foodX == temp0.x && foodY == temp0.y && foodX == getBoardSizeX() && foodY == getBoardSizeY());
  
-    foodPos.setObjPos(foodX, foodY, 'o'); // 'F' for food
+    foodPos.setObjPos(foodX, foodY, 'o'); // 'o' for food
+*/
 }
  
 void GameMechs::getFoodPosition(objPos& returnPos)
