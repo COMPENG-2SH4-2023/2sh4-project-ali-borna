@@ -26,17 +26,19 @@ GameMechs::GameMechs(int boardX, int boardY)
  
 // do you need a destructor?
 //Added:
-void GameMechs::generateFood(objPos blockOff)
+void GameMechs::generateFood(objPosArrayList* blockOff) //change
 {
     int foodX, foodY;
+    objPos temp0;
+    blockOff->getHeadElement(temp0);
     do
     {
         foodX = rand() % (boardSizeX - 2) + 1;
         foodY = rand() % (boardSizeY - 2) + 1;
         // Generate a new position until it's free and not equal to blockOff position
-    } while (foodX == blockOff.x && foodY == blockOff.y && foodX == getBoardSizeX() && foodY == getBoardSizeY());
+    } while (foodX == temp0.x && foodY == temp0.y && foodX == getBoardSizeX() && foodY == getBoardSizeY());
  
-    foodPos.setObjPos(foodX, foodY, 'F'); // 'F' for food
+    foodPos.setObjPos(foodX, foodY, 'o'); // 'F' for food
 }
  
 void GameMechs::getFoodPosition(objPos& returnPos)

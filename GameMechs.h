@@ -48,7 +48,7 @@ class GameMechs
     //Added:
         int getScore();
         void incrementScore();
-        void generateFood(objPos blockOff);
+        void generateFood(objPosArrayList* blockOff);
         void getFoodPosition(objPos& returnPos);
         bool isPositionFree(int x, int y);
  

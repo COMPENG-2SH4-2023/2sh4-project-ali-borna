@@ -3,6 +3,7 @@
 #include "objPos.h"
 #include "Player.h"
 #include "GameMechs.h"
+#include "objPosArrayList.h"
 
 using namespace std;
 
@@ -45,8 +46,8 @@ void Initialize(void)
     myGM = new GameMechs(30,15);
     myPlayer = new Player(myGM);
 
-    objPos food;
-    myGM->generateFood(food);
+    objPosArrayList* food = myPlayer->getPlayerPos(); //test
+    myGM->generateFood(food); //test
 }
 
 void GetInput(void)
@@ -65,38 +66,52 @@ void RunLogic(void)
 void DrawScreen(void)
 {
     MacUILib_clearScreen(); 
-    
-    objPos tempPos;
+
+    bool drawn;
+
+    objPosArrayList* playerBody = myPlayer->getPlayerPos();
+    objPos tempBody;
+
     objPos tempPos2;
-    myPlayer->getPlayerPos(tempPos);
     myGM->getFoodPosition(tempPos2);
 
     for(int i=0;i< myGM->getBoardSizeY();i++) //row for loop. for each row, the elements (which are in columns) will be printed
     {
         for(int j=0;j<myGM->getBoardSizeX();j++) //column for loop. 
         {
+            drawn = false;
+            for(int k = 0; k<playerBody->getSize();k++)
+            {
+                playerBody->getElement(tempBody, k);
+                if(j==tempBody.x && i==tempBody.y)
+                {
+                    MacUILib_printf("%c", tempBody.symbol);
+                    drawn=true;
+                    break;
+                }
+            }
+
+            if(drawn)continue;
+
             if(i==0 || i==myGM->getBoardSizeY()-1 || j==0 || j==myGM->getBoardSizeX()-1)
             {
-                printf("%c", '#');
+                MacUILib_printf("%c", '#');
             }
-            else if(j==tempPos.x && i==tempPos.y)
-            {
-                printf("%c", tempPos.symbol);
-            }
+
             else if(j==tempPos2.x && i==tempPos2.y)
             {
-                printf("%c", tempPos2.symbol);
+                MacUILib_printf("%c", tempPos2.symbol);
             }
             else
             {
-                printf("%c", 32);
+                MacUILib_printf("%c", 32);
             
             }
         }
-        printf("\n");
+        MacUILib_printf("\n");
     }
 
-    MacUILib_printf("Score: %d, Player Pos: <%d, %d>\n", myGM->getScore(), tempPos.x, tempPos.y);
+    //MacUILib_printf("Score: %d, Player Pos: <%d, %d>\n", myGM->getScore(), tempPos.x, tempPos.y);
 
     //printMatrix(board,ROWS);  //temporary testing
 }

@@ -11,19 +11,31 @@ Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
-    playerPos.setObjPos((mainGameMechsRef->getBoardSizeX())/2,(mainGameMechsRef->getBoardSizeY())/2,42);
+    
+    objPos tempPos;
+    tempPos.setObjPos((mainGameMechsRef->getBoardSizeX())/2,(mainGameMechsRef->getBoardSizeY())/2,42);
     // more actions to be included
+    playerPosList = new objPosArrayList();
+    playerPosList->insertHead(tempPos);
+
+    //debug
+
+    playerPosList->insertHead(tempPos);
+    playerPosList->insertHead(tempPos);
+    playerPosList->insertHead(tempPos);
+    playerPosList->insertHead(tempPos);
+
 }
 
 
 Player::~Player()
 {
-    // delete any heap members here
+    delete playerPosList;
 }
 
-void Player::getPlayerPos(objPos &returnPos)
+objPosArrayList* Player::getPlayerPos()
 {
-    returnPos.setObjPos(playerPos);
+    return playerPosList;
 
     // return the reference to the playerPos arrray list
 }
@@ -81,37 +93,42 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer()
 {
+    objPos currHead; 
+    playerPosList->getHeadElement(currHead);
+
     if(myDir==RIGHT)
     {
-        playerPos.x++;
-        if(playerPos.x == (mainGameMechsRef->getBoardSizeX())-1 || playerPos.x == 0 || playerPos.y == (mainGameMechsRef->getBoardSizeY())-1 || playerPos.y == 0) 
+        currHead.x++;
+        if(currHead.x == (mainGameMechsRef->getBoardSizeX())-1 || currHead.x == 0 || currHead.y == (mainGameMechsRef->getBoardSizeY())-1 || currHead.y == 0) 
         {
-            playerPos.x=1;
+            currHead.x=1;
         }
     }
     else if(myDir==LEFT)
     {
-        playerPos.x--;
-        if(playerPos.x == (mainGameMechsRef->getBoardSizeX())-1 || playerPos.x == 0 || playerPos.y == (mainGameMechsRef->getBoardSizeY())-1 || playerPos.y == 0) 
+        currHead.x--;
+        if(currHead.x == (mainGameMechsRef->getBoardSizeX())-1 || currHead.x == 0 || currHead.y == (mainGameMechsRef->getBoardSizeY())-1 || currHead.y == 0) 
         {
-            playerPos.x=(mainGameMechsRef->getBoardSizeX())-2;
+            currHead.x=(mainGameMechsRef->getBoardSizeX())-2;
         }
     }
     else if(myDir==DOWN)
     {
-        playerPos.y++;
-        if(playerPos.x == (mainGameMechsRef->getBoardSizeX())-1 || playerPos.x == 0 || playerPos.y == (mainGameMechsRef->getBoardSizeY())-1 || playerPos.y == 0) 
+        currHead.y++;
+        if(currHead.x == (mainGameMechsRef->getBoardSizeX())-1 || currHead.x == 0 || currHead.y == (mainGameMechsRef->getBoardSizeY())-1 || currHead.y == 0) 
         {
-            playerPos.y=1;
+            currHead.y=1;
         }
     }
     else if(myDir==UP)
     {
-        playerPos.y--;
-        if(playerPos.x == (mainGameMechsRef->getBoardSizeX())-1 || playerPos.x == 0 || playerPos.y == (mainGameMechsRef->getBoardSizeY())-1 || playerPos.y == 0) 
+        currHead.y--;
+        if(currHead.x == (mainGameMechsRef->getBoardSizeX())-1 || currHead.x == 0 || currHead.y == (mainGameMechsRef->getBoardSizeY())-1 || currHead.y == 0) 
         {
-            playerPos.y=(mainGameMechsRef->getBoardSizeY())-2;
+            currHead.y=(mainGameMechsRef->getBoardSizeY())-2;
         }
     }
+    playerPosList->insertHead(currHead);
+    playerPosList->removeTail();
 }
 
