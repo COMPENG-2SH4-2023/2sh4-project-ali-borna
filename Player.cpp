@@ -19,12 +19,12 @@ Player::Player(GameMechs* thisGMRef)
     playerPosList->insertHead(tempPos);
 
     //debug
-
+/*
     playerPosList->insertHead(tempPos);
     playerPosList->insertHead(tempPos);
     playerPosList->insertHead(tempPos);
     playerPosList->insertHead(tempPos);
-
+*/
 }
 
 
@@ -128,7 +128,32 @@ void Player::movePlayer()
             currHead.y=(mainGameMechsRef->getBoardSizeY())-2;
         }
     }
-    playerPosList->insertHead(currHead);
-    playerPosList->removeTail();
+
+    objPos beta;
+    mainGameMechsRef->getFoodPosition(beta);
+    const objPos* ref = &beta;
+
+    if(currHead.isPosEqual(ref))
+    {
+        playerPosList->insertHead(currHead);
+        mainGameMechsRef->generateFood(playerPosList);
+        mainGameMechsRef->incrementScore();
+    }
+    else
+    {
+        playerPosList->insertHead(currHead);
+        playerPosList->removeTail();
+    }    
+}   
+
+void incPlayerLength()
+{
+
 }
+
+bool checkFoodConsumption()
+{
+
+}
+
 

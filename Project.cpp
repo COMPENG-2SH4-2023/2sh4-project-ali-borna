@@ -8,6 +8,7 @@
 using namespace std;
 
 #define DELAY_CONST 100000
+
 GameMechs* myGM;
 Player* myPlayer;
 
@@ -17,7 +18,6 @@ void RunLogic(void);
 void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
-//void printMatrix(char input[][COLS], int rows); //temporary
 
 int main(void)
 {
@@ -46,8 +46,8 @@ void Initialize(void)
     myGM = new GameMechs(30,15);
     myPlayer = new Player(myGM);
 
-    objPosArrayList* food = myPlayer->getPlayerPos(); //test
-    myGM->generateFood(food); //test
+    objPosArrayList* food = myPlayer->getPlayerPos(); 
+    myGM->generateFood(food); 
 }
 
 void GetInput(void)
@@ -75,9 +75,9 @@ void DrawScreen(void)
     objPos tempPos2;
     myGM->getFoodPosition(tempPos2);
 
-    for(int i=0;i< myGM->getBoardSizeY();i++) //row for loop. for each row, the elements (which are in columns) will be printed
+    for(int i=0;i< myGM->getBoardSizeY();i++) 
     {
-        for(int j=0;j<myGM->getBoardSizeX();j++) //column for loop. 
+        for(int j=0;j<myGM->getBoardSizeX();j++)  
         {
             drawn = false;
             for(int k = 0; k<playerBody->getSize();k++)
@@ -111,9 +111,8 @@ void DrawScreen(void)
         MacUILib_printf("\n");
     }
 
-    //MacUILib_printf("Score: %d, Player Pos: <%d, %d>\n", myGM->getScore(), tempPos.x, tempPos.y);
+    MacUILib_printf("Score: %d", myGM->getScore());
 
-    //printMatrix(board,ROWS);  //temporary testing
 }
 
 void LoopDelay(void)
@@ -130,18 +129,3 @@ void CleanUp(void)
     delete myGM;
     delete myPlayer;
 }
-/*
-void printMatrix(char input[][COLS], int rows) //temporary
-{
-    int i, j;
-
-    for(i=0;i<rows;i++) //row for loop
-    {
-        for(j=0;j<COLS;j++) //column for loop. 
-        {
-            MacUILib_printf("%c", input[i][j]);
-        }
-        MacUILib_printf("\n");
-    }
-}
-*/

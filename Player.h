@@ -23,6 +23,8 @@ class Player
         objPosArrayList* getPlayerPos(); // returns pointer to array list
         void updatePlayerDir();
         void movePlayer();
+        void incPlayerLength();
+        bool checkFoodConsumption();
 
     private:
         objPosArrayList* playerPosList;   // Upgrade this in iteration 3.       

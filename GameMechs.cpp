@@ -102,5 +102,5 @@ int GameMechs::getScore()
  
 void GameMechs::incrementScore()
 {
-    ++score;
+    score++;
 }
