@@ -28,43 +28,40 @@ GameMechs::GameMechs(int boardX, int boardY)
 //Added:
 void GameMechs::generateFood(objPosArrayList* blockOff) //change
 {
-    int foodX, foodY, check = 0;
+    int foodX, foodY, check=0;
     bool flag = false;
-    objPos temp0;
-
+    cout<<"OUTSIDE WHILE LOOP" << endl;
     while(flag==false)
     {
+        objPos temp0;
+        foodX = rand() % (boardSizeX - 2) + 1;
+        foodY = rand() % (boardSizeY - 2) + 1;
+
         for(int i = 0; i < blockOff->getSize()-1; i++)
         {
             blockOff->getElement(temp0, i);
-            if (foodX == temp0.x || foodY == temp0.y || foodX == getBoardSizeX() || foodY == getBoardSizeY())
+            if(temp0.x != foodX || temp0.y != foodY)
             {
-                check = 1;
-                break;
+                check=0;
+                continue;
             }
             else
             {
-                check = 0;
+                check=1;
+                break;
             }
         }
+        cout<<"OUTSIDE IF LOOP, check = " << check << endl;
+
         if(check==0)
         {
-            flag=true;
+            flag = true;
             break;
+            cout<<"in break " << endl;
         }
+            cout<<"end of while loop " << endl;
     }
-    
-    foodPos.setObjPos(foodX, foodY, 'o'); // 'F' for food
-
-/*
-    blockOff->getHeadElement(temp0);
-    do
-    {
-        foodX = rand() % (boardSizeX - 2) + 1; //rand
-        foodY = rand() % (boardSizeY - 2) + 1;
-        // Generate a new position until it's free and not equal to blockOff position
-    } while (foodX == temp0.x && foodY == temp0.y && foodX == getBoardSizeX() && foodY == getBoardSizeY());
- */
+    foodPos.setObjPos(foodX, foodY, 'o');
 }
 
 void GameMechs::getFoodPosition(objPos& returnPos)
