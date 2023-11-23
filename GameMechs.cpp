@@ -28,8 +28,35 @@ GameMechs::GameMechs(int boardX, int boardY)
 //Added:
 void GameMechs::generateFood(objPosArrayList* blockOff) //change
 {
-    int foodX, foodY;
+    int foodX, foodY, check = 0;
+    bool flag = false;
     objPos temp0;
+
+    while(flag==false)
+    {
+        for(int i = 0; i < blockOff->getSize()-1; i++)
+        {
+            blockOff->getElement(temp0, i);
+            if (foodX == temp0.x || foodY == temp0.y || foodX == getBoardSizeX() || foodY == getBoardSizeY())
+            {
+                check = 1;
+                break;
+            }
+            else
+            {
+                check = 0;
+            }
+        }
+        if(check==0)
+        {
+            flag=true;
+            break;
+        }
+    }
+    
+    foodPos.setObjPos(foodX, foodY, 'o'); // 'F' for food
+
+/*
     blockOff->getHeadElement(temp0);
     do
     {
@@ -37,10 +64,9 @@ void GameMechs::generateFood(objPosArrayList* blockOff) //change
         foodY = rand() % (boardSizeY - 2) + 1;
         // Generate a new position until it's free and not equal to blockOff position
     } while (foodX == temp0.x && foodY == temp0.y && foodX == getBoardSizeX() && foodY == getBoardSizeY());
- 
-    foodPos.setObjPos(foodX, foodY, 'o'); // 'F' for food
+ */
 }
- 
+
 void GameMechs::getFoodPosition(objPos& returnPos)
 {
     returnPos.setObjPos(foodPos);
@@ -84,6 +110,7 @@ bool GameMechs::getLoseFlagStatus()
 void GameMechs::setLoseFlag()
 {
     loseFlag = true;
+    cout << "Game Over" << endl;
 }
 void GameMechs::setInput(char this_input)
 {

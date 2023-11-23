@@ -139,5 +139,10 @@ void Player::movePlayer()
     }    
 }   
 
+bool Player::checkSelfCollision()
+{
+    
+}
+
 
 

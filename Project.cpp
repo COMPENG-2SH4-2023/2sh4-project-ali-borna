@@ -110,7 +110,7 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }
-    MacUILib_printf("Score: %d", myGM->getScore());
+    MacUILib_printf("Score: %d", playerBody->getSize()-1);
 
 }
 
