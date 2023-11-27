@@ -1,8 +1,5 @@
 #include "objPosArrayList.h"
 
-// Check lecture contents on general purpose array list construction, 
-// and modify it to support objPos array list construction.
-
 objPosArrayList::objPosArrayList()
 {
     sizeList=0;
@@ -50,13 +47,13 @@ void objPosArrayList::removeHead()
     {
         aList[i].setObjPos(aList[i+1]);
     }
-    aList[sizeList-1].setObjPos(0,0,0);
+    aList[sizeList-1].setObjPos(0,0,0); //set the last value to whatever
     sizeList--;
 }
 
 void objPosArrayList::removeTail()
 {
-    aList[sizeList-1].setObjPos(0,0,0);
+    aList[sizeList-1].setObjPos(0,0,0); //remove the tail and set it to whatever
     sizeList--;
 }
 

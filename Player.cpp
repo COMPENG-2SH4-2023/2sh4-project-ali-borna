@@ -6,42 +6,35 @@ using namespace std;
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
-    myDir = STOP;
+    myDir = STOP; // player starts in a stationary position of course.
     
-    objPos tempPos;
+    objPos tempPos; //since the 'objPos' setter takes in a type 'objPos' for arg, we need to instantiate temp objPos.
+
     tempPos.setObjPos((mainGameMechsRef->getBoardSizeX())/2,(mainGameMechsRef->getBoardSizeY())/2,42);
-    // more actions to be included
-    playerPosList = new objPosArrayList();
-    playerPosList->insertHead(tempPos);
+    // default settings, player must start in the middle of the board with symbol '*' denoted by ascii = 42.
 
-    //debug
-/*
-    playerPosList->insertHead(tempPos);
-    playerPosList->insertHead(tempPos);
-    playerPosList->insertHead(tempPos);
-    playerPosList->insertHead(tempPos);
-*/
+    playerPosList = new objPosArrayList(); // will be destroyed by destructor.
+    playerPosList->insertHead(tempPos); // instantiate the head at the default: middle of the board via tempPos
+
 }
-
 
 Player::~Player()
 {
-    delete playerPosList;
+    delete playerPosList; //destroy what was initialized on the heap from the constructors.
 }
 
 objPosArrayList* Player::getPlayerPos()
 {
-    return playerPosList;
-
-    // return the reference to the playerPos arrray list
+    return playerPosList; 
+    // return the reference to the playerPos arrray list, this is a pointer to the heap from line 16 above.
 }
 
 void Player::updatePlayerDir()
 {
-    switch(mainGameMechsRef->getInput())
+    switch(mainGameMechsRef->getInput()) //we can access the GameMechs class via the pointer to check if theres an input.
     {                      
-        case ' ':  // exit
-            mainGameMechsRef->setExitTrue();
+        case ' ':  // exit, we chose space to exit, can be changed to ESC or whatever...
+            mainGameMechsRef->setExitTrue(); //end game.
             break;
 
         case 'W':
@@ -83,14 +76,23 @@ void Player::updatePlayerDir()
         default:
             break;
     }
-    mainGameMechsRef->clearInput();
+    mainGameMechsRef->clearInput(); //remove old inputs from buffer.
 }
-    // PPA3 input processing logic        
 
 void Player::movePlayer()
 {
-    objPos currHead; 
-    playerPosList->getHeadElement(currHead);
+
+    /*
+        This member function also includes the code for 'incrementPlayerLength()' as well as 'checkFoodConsump()'
+        at the bottom. 
+        These can be created into separate member functions themselves, but it seemed redundant and as such
+        they're implemented in here. 
+    */
+
+    objPos currHead;   
+    playerPosList->getHeadElement(currHead); // lets keep track of the current head position using the objPos class.
+
+    // --------------- START OF BODY MOVING ROUTINE (from PPA3) -------------
 
     if(myDir==RIGHT)
     {
@@ -125,15 +127,18 @@ void Player::movePlayer()
         }
     }
 
-    objPos beta;
-    mainGameMechsRef->getFoodPosition(beta);
-    const objPos* ref = &beta;
+    // --------------- END OF BODY MOVING ROUTINE -------------
 
-    if(currHead.isPosEqual(ref))
+    // ----------- food consumption check: -------------
+    objPos foodP; 
+    mainGameMechsRef->getFoodPosition(foodP); //put the co-ordinated of the food into 'foodP' of type objPos.
+    const objPos* ref = &foodP; //needed for 'isEqual()' member function to evaluate whether or not collision has occured.
+
+    if(currHead.isPosEqual(ref)) // if the head crashes into the food's co-ordinates, pointed by 'ref'
     {
         playerPosList->insertHead(currHead);
-        mainGameMechsRef->generateFood(playerPosList);
-        mainGameMechsRef->incrementScore();
+        mainGameMechsRef->generateFood(playerPosList); //generate new food
+        mainGameMechsRef->incrementScore(); //gain score
     }
     else
     {
@@ -141,7 +146,9 @@ void Player::movePlayer()
         playerPosList->removeTail();
     }
 
-    if(checkSelfCollision(currHead)==true)
+
+    // ------- self collision check ------------
+    if(checkSelfCollision(currHead))
     {
         mainGameMechsRef->setLoseFlag();
         mainGameMechsRef->setExitTrue();
@@ -150,13 +157,13 @@ void Player::movePlayer()
 
 bool Player::checkSelfCollision(objPos &curr)
 {
-    objPos temp2;
+    objPos temp2; //temporary, needed for element getter function below in line 164
 
-    for(int i = playerPosList->getSize(); i > 0; i--)
+    for(int i = playerPosList->getSize(); i > 0; i--) 
     {
-        playerPosList->getElement(temp2, i);
+        playerPosList->getElement(temp2, i); //evaluate each element of the snake body by getter function
 
-        if(temp2.x == curr.x  && temp2.y == curr.y)
+        if(temp2.x == curr.x  && temp2.y == curr.y) //collision has occured at current head and snake's body.
         {
             return true;
         }
