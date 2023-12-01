@@ -1,12 +1,8 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/gUachAgg)
-# COE2SH4-PPA3Template
-Project Preparation Activity 3
+# COE2SH4-FinalProject
 
-You must watch the briefing video and read through the manual to engage in the development activities.
+Team Members:
 
+Borna Askarimajdabadkohneh - macID: askarimb - Student#: 400124137
+Ali Naqvi - macID: naqvia13 - Student#: 400450701
 
-Section: [Insert your lab section]
-
-MacID: [Insert your macID here]
-
-StudentID: [Insert your numerical student ID here]

@@ -82,13 +82,6 @@ void Player::updatePlayerDir()
 void Player::movePlayer()
 {
 
-    /*
-        This member function also includes the code for 'incrementPlayerLength()' as well as 'checkFoodConsump()'
-        at the bottom. 
-        These can be created into separate member functions themselves, but it seemed redundant and as such
-        they're implemented in here. 
-    */
-
     objPos currHead;   
     playerPosList->getHeadElement(currHead); // lets keep track of the current head position using the objPos class.
 

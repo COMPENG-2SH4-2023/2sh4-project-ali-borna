@@ -130,7 +130,8 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }
-    MacUILib_printf("Score: %d", playerBody->getSize()-1);
+    MacUILib_printf("Score: %d\n", myGM->getScore());
+    MacUILib_printf("Press space bar to quit\n");
 }
 
 void LoopDelay(void)
@@ -141,6 +142,7 @@ void LoopDelay(void)
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
+    MacUILib_printf("GAME OVER! \nScore: %d\n", myGM->getScore());
     MacUILib_uninit();
     delete myGM; //we instantiated this on the heap.
     delete myPlayer; //we instantiated on the heap. 
