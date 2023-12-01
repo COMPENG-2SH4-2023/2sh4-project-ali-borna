@@ -123,22 +123,7 @@ void Player::movePlayer()
     // --------------- END OF BODY MOVING ROUTINE -------------
 
     // ----------- food consumption check: -------------
-    objPos foodP; 
-    mainGameMechsRef->getFoodPosition(foodP); //put the co-ordinated of the food into 'foodP' of type objPos.
-    const objPos* ref = &foodP; //needed for 'isEqual()' member function to evaluate whether or not collision has occured.
-
-    if(currHead.isPosEqual(ref)) // if the head crashes into the food's co-ordinates, pointed by 'ref'
-    {
-        playerPosList->insertHead(currHead);
-        mainGameMechsRef->generateFood(playerPosList); //generate new food
-        mainGameMechsRef->incrementScore(); //gain score
-    }
-    else
-    {
-        playerPosList->insertHead(currHead);
-        playerPosList->removeTail();
-    }
-
+    checkFoodConsumption(currHead);
 
     // ------- self collision check ------------
     if(checkSelfCollision(currHead))
@@ -147,6 +132,25 @@ void Player::movePlayer()
         mainGameMechsRef->setExitTrue();
     }    
 }   
+
+void Player::checkFoodConsumption(objPos &curr)
+{
+    objPos foodP; 
+    mainGameMechsRef->getFoodPosition(foodP); //put the co-ordinated of the food into 'foodP' of type objPos.
+    const objPos* ref = &foodP; //needed for 'isEqual()' member function to evaluate whether or not collision has occured.
+
+    if(curr.isPosEqual(ref)) // if the head crashes into the food's co-ordinates, pointed by 'ref'
+    {
+        playerPosList->insertHead(curr);
+        mainGameMechsRef->generateFood(playerPosList); //generate new food
+        mainGameMechsRef->incrementScore(); //gain score
+    }
+    else
+    {
+        playerPosList->insertHead(curr);
+        playerPosList->removeTail();
+    }
+}
 
 bool Player::checkSelfCollision(objPos &curr)
 {

@@ -21,7 +21,7 @@ class Player
 
         //don't need, for now, have been implemented inside member function 'movePlayer()'
         //void incPlayerLength(); 
-        //bool checkFoodConsumption();
+        void checkFoodConsumption(objPos &curr);
 
     private:
         objPosArrayList* playerPosList;   // Snake body       
