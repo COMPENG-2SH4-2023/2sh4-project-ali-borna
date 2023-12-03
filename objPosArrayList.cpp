@@ -1,73 +1,78 @@
 #include "objPosArrayList.h"
 
-objPosArrayList::objPosArrayList()
-{
-    sizeList=0;
-    sizeArray=ARRAY_MAX_CAP;
+objPosArrayList::objPosArrayList() : sizeList(0), sizeArray(ARRAY_MAX_CAP) {
     aList = new objPos[ARRAY_MAX_CAP];
 }
 
-objPosArrayList::~objPosArrayList()
-{
+objPosArrayList::~objPosArrayList() {
     delete[] aList;
 }
 
-int objPosArrayList::getSize()
-{
+int objPosArrayList::getSize() {
     return sizeList;
 }
 
-void objPosArrayList::insertHead(objPos thisPos)
-{
-    if(sizeList == sizeArray) //list is full
-    {
-        return;
+void objPosArrayList::insertHead(objPos thisPos) {
+    if (sizeList < ARRAY_MAX_CAP) {
+        for (int i = sizeList; i > 0; --i) { //loop through everything from the tail of the snake to the head
+            aList[i] = aList[i - 1]; //everything gets shifted to make space for the new head
+        }
+        aList[0] = thisPos; //inserts the new head
+        ++sizeList;
     }
-    for(int i = sizeList; i>0; i--) // starts at one space after tail
-    {
-        aList[i].setObjPos(aList[i-1]);
+}
+
+void objPosArrayList::removeHead() {
+    if (sizeList > 0) {
+        for (int i = 0; i < sizeList - 1; ++i) {
+            aList[i] = aList[i + 1];
+        }
+        --sizeList;
     }
-    aList[0].setObjPos(thisPos);
-    sizeList++;
 }
 
-void objPosArrayList::insertTail(objPos thisPos)
-{
-    if(sizeList == sizeArray) //list is full
-    {
-        return;
+void objPosArrayList::insertTail(objPos thisPos) {
+    if (sizeList < ARRAY_MAX_CAP) {
+        aList[sizeList] = thisPos;
+        ++sizeList;
     }
-    aList[sizeList].setObjPos(thisPos);
-    sizeList++;
 }
 
-void objPosArrayList::removeHead()
-{
-    for(int i = 0; i<sizeList; i++)
-    {
-        aList[i].setObjPos(aList[i+1]);
+void objPosArrayList::removeTail() {
+    if (sizeList > 0) {
+        --sizeList;
     }
-    aList[sizeList-1].setObjPos(0,0,0); //set the last value to whatever
-    sizeList--;
 }
 
-void objPosArrayList::removeTail()
-{
-    aList[sizeList-1].setObjPos(0,0,0); //remove the tail and set it to whatever
-    sizeList--;
+void objPosArrayList::clear() {
+    while (getSize() > 0) {
+        removeTail();
+    }
 }
 
-void objPosArrayList::getHeadElement(objPos &returnPos)
-{
-    returnPos.setObjPos(aList[0]);
+void objPosArrayList::getHeadElement(objPos& returnPos) {
+    if (sizeList > 0) {
+        returnPos = aList[0];
+    }
 }
 
-void objPosArrayList::getTailElement(objPos &returnPos)
-{
-    returnPos.setObjPos(aList[sizeList-1]);
+void objPosArrayList::getTailElement(objPos& returnPos) {
+    if (sizeList > 0) {
+        returnPos = aList[sizeList - 1];
+    }
 }
 
-void objPosArrayList::getElement(objPos &returnPos, int index)
-{
-    returnPos.setObjPos(aList[index]);
+void objPosArrayList::getElement(objPos& returnPos, int index) {
+    if (index >= 0 && index < sizeList) {
+        returnPos = aList[index];
+    }
+}
+
+void objPosArrayList::removeElement(int index) {
+    if (index >= 0 && index < sizeList) {
+        for (int i = index; i < sizeList - 1; ++i) {
+            aList[i] = aList[i + 1]; // Shift elements down to fill the gap
+        }
+        sizeList--; // Decrease the size of the list
+    }
 }

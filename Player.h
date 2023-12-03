@@ -4,31 +4,28 @@
 #include "GameMechs.h"
 #include "objPos.h"
 #include "objPosArrayList.h"
+#include "Food.h"
 
 class Player
 {
     public:
         enum Dir {UP, DOWN, LEFT, RIGHT, STOP};  // This is the direction state
 
-        Player(); //default, unneeded. 
-        Player(GameMechs* thisGMRef);
-        ~Player(); //destructor 
+        Player(GameMechs* thisGMRef, Food* foodRef);
+        ~Player();
 
-        objPosArrayList* getPlayerPos(); // returns pointer to array list
+        objPosArrayList* getPlayerPos();
         void updatePlayerDir();
         void movePlayer();
-        bool checkSelfCollision(objPos &curr); //takes current head position via reference. evaluates collision.
-
-        //don't need, for now, have been implemented inside member function 'movePlayer()'
-        //void incPlayerLength(); 
-        void checkFoodConsumption(objPos &curr);
-
+        void increasePlayerLength(int growBy);
+        bool checkSelfCollision();
+        int checkFoodConsumption();
     private:
-        objPosArrayList* playerPosList;   // Snake body       
+        objPosArrayList* playPosList;
         enum Dir myDir;
-
-        // Need a reference to the Main Game Mechanisms
+        int shouldGrowBy;
         GameMechs* mainGameMechsRef;
+        Food* foodRef;
 };
 
 #endif

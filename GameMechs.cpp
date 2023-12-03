@@ -1,123 +1,69 @@
-#include <iostream>
 #include "GameMechs.h"
 #include <cstdlib>
 #include <ctime>
 #include "objPos.h"
-#include "MacUILib.h"
 
-using namespace std;
-GameMechs::GameMechs()
-  :input(0), exitFlag(false), loseFlag(false), score(0) //default settings
+GameMechs::GameMechs(int boardX, int boardY) :
+    input(0), exitFlag(false), loseFlag(false), score(0), boardSizeX(boardX), boardSizeY(boardY) 
 {
-    boardSizeX=30;
-    boardSizeY=15;
     srand((unsigned int)time(NULL));
-    foodPos.setObjPos(-1,-1,'o'); //outside the board, for now until food is generated
-}
- 
-GameMechs::GameMechs(int boardX, int boardY)
-  :input(0), exitFlag(false), loseFlag(false), score(0) //default settings
-{
-    boardSizeX=boardX;
-    boardSizeY=boardY;
-    srand((unsigned int)time(NULL));
-    foodPos.setObjPos(-1,-1,'o'); //outside the board, for now until food is generated
-}
- 
-void GameMechs::generateFood(objPosArrayList* blockOff) 
-{
-    int foodX, foodY, check=0;
-    bool flag = false;
-    while(flag==false)
-    {
-        objPos temp0;
-        foodX = rand() % (boardSizeX - 2) + 1;
-        foodY = rand() % (boardSizeY - 2) + 1;
-
-        for(int i = 0; i < blockOff->getSize()-1; i++)
-        {
-            blockOff->getElement(temp0, i); //each co-ordinate of the snake's body is evaluated thru the for loop.
-            if(temp0.x != foodX || temp0.y != foodY)
-            {
-                check=0;
-                continue;
-            }
-            else
-            {
-                check=1; //over lapping has occured. 
-                break; //break out and begin again
-            }
-        }
-
-        if(check==0) //when check is anything other than 0, we know that overlapping is occured. 
-        {
-            flag = true; //end the while loop, correct food items have been generated. 
-            break;
-        }
-    }
-    foodPos.setObjPos(foodX, foodY, 'o'); //setter
 }
 
-void GameMechs::getFoodPosition(objPos& returnPos)
+GameMechs::~GameMechs()  // no internal members on heap
 {
-    returnPos.setObjPos(foodPos);
 }
- 
-bool GameMechs::getExitFlagStatus()
-{
-    return exitFlag;
+
+bool GameMechs::getExitFlagStatus() 
+{ 
+    return exitFlag; 
 }
- 
-char GameMechs::getInput()
-{
-    if(MacUILib_hasChar()) //check if an input is received
-    {
-        input=MacUILib_getChar(); 
-    }
-    return input;
+
+void GameMechs::setExitTrue() 
+{ 
+    exitFlag = true; 
 }
- 
-int GameMechs::getBoardSizeX()
-{
-    return boardSizeX;
+
+bool GameMechs::getLoseFlagStatus() 
+{ 
+    return loseFlag; 
 }
- 
-int GameMechs::getBoardSizeY()
-{
-    return boardSizeY;
+
+void GameMechs::setLoseFlag() 
+{ 
+    loseFlag = true; 
 }
- 
- 
-void GameMechs::setExitTrue()
-{
-    exitFlag = true;
+
+char GameMechs::getInput() 
+{ 
+    return input; 
 }
-//Added:
-bool GameMechs::getLoseFlagStatus()
-{
-    return loseFlag;
+
+void GameMechs::setInput(char thisInput) 
+{ 
+    input = thisInput; 
 }
- 
-void GameMechs::setLoseFlag()
+
+void GameMechs::clearInput() 
 {
-    loseFlag = true;
+    input = 0; 
 }
-void GameMechs::setInput(char this_input)
-{
-    input = this_input;
+
+int GameMechs::getBoardSizeX() 
+{ 
+    return boardSizeX; 
 }
- 
-void GameMechs::clearInput()
-{
-    input = 0;
+
+int GameMechs::getBoardSizeY() 
+{ 
+    return boardSizeY; 
 }
-//Added:
-int GameMechs::getScore()
-{
-    return score;
+
+int GameMechs::getScore() 
+{ 
+    return score; 
 }
- 
-void GameMechs::incrementScore()
-{
-    score++;
+
+void GameMechs::incrementScore(int addScore) 
+{ 
+    score += addScore; 
 }

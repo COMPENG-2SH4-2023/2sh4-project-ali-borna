@@ -1,23 +1,18 @@
 #include <iostream>
-#include "MacUILib.h"
 #include "objPos.h"
-#include "Player.h"
 #include "GameMechs.h"
-#include "objPosArrayList.h"
+#include "Player.h"
+#include "Food.h"
+#include "MacUILib.h"
 
 using namespace std;
 
-#define DELAY_CONST 100000 // change to make fps higher/lower
+#define DELAY_CONST 75000
 
-GameMechs* myGM; 
-// instantiate pointer to 'game mechanics' class - to be used together with ObjPos later in Draw() routine
-
-
-Player* myPlayer; 
-/* 
-instantiate pointer to 'Player' class  
-    - to be used together with ObjPosArrayList and the GameMech pointer above inside Draw() and RunLogic()
-*/
+GameMechs game;
+Food foodManager (&game);
+Player snake(&game, &foodManager);
+char input;
 
 void Initialize(void);
 void GetInput(void);
@@ -31,8 +26,8 @@ int main(void)
 
     Initialize();
 
-// the program will only run while the exitflag is false (which is a method inside GameMechs class)
-    while(myGM->getExitFlagStatus() == false) 
+    //loop while "space" key not entered or no body collision
+    while(game.getExitFlagStatus() == false && game.getLoseFlagStatus() == false)
     {
         GetInput();
         RunLogic();
@@ -42,7 +37,6 @@ int main(void)
 
     CleanUp();
 
-    return 0;
 }
 
 
@@ -50,100 +44,118 @@ void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
-
-    // we need to instantiate some pointers and objects on the heap which will be used later in RunLogic() and Draw()
-
-    myGM = new GameMechs(30,15); // initialize the gameboard, the args can be changed based on the user's desire.
-
-    myPlayer = new Player(myGM); 
-    // 'myPlayer' is a pointer which points to a 'Player' class in the heap, instantiated in global scope.
-    // Instantiation of Player class needs to include a pointer to 'GameMech' class, 
-    // which is 'myGM' (initialized in global scope above). This allows us to access stuff in 'GameMechs' class via 'Player'
-
-    objPosArrayList* food = myPlayer->getPlayerPos(); 
-    //we need to give 'food' the location of the player so that it knows where NOT to generate food.
-
-    myGM->generateFood(food); //generate the food, which is a member function of 'GameMechs' class.
+    foodManager.generateFood(*(snake.getPlayerPos()));
 }
 
-void GetInput(void)
-{
-   myGM->getInput(); //self explanatory, get the input, will be used in RunLogic() and Draw().
+void GetInput(void) {
+    if (MacUILib_hasChar()) {
+        input = MacUILib_getChar();
+        game.setInput(input);
+        snake.updatePlayerDir();
+    }
 }
 
 void RunLogic(void)
 {
-    myPlayer->updatePlayerDir(); 
-    myPlayer->movePlayer();
+    // Update the snake's direction and move it based on input
+    snake.updatePlayerDir();
+    snake.movePlayer();
 
-    myGM->clearInput(); //so that the previously help input in the buffer isn't used.
+    // Check for food consumption
+    int shouldGrowBy = snake.checkFoodConsumption();
+    if (shouldGrowBy != 0) {
+        objPos headPos;
+        snake.getPlayerPos()->getHeadElement(headPos);
+        snake.increasePlayerLength(shouldGrowBy);
+        if (shouldGrowBy == 10)
+        {
+            game.incrementScore(5);
+            foodManager.generateFood(*(snake.getPlayerPos()));
+        }
+        else
+        {
+            game.incrementScore(1);
+            foodManager.generateFood(*(snake.getPlayerPos()));
+        }
+        
+        if (foodManager.getFoodList()->getSize() == 0)
+        {
+            foodManager.generateFood(*(snake.getPlayerPos()));
+        }
+    }
+
+    // Check for collision with the snake's body
+    if (snake.checkSelfCollision())
+    {
+        game.setLoseFlag();
+    }
 }
 
 void DrawScreen(void)
 {
-    MacUILib_clearScreen(); 
+    MacUILib_clearScreen();
 
-    bool drawn;
+    // Draw the game board with the snake and food
+    for (int y = 0; y < game.getBoardSizeY(); ++y) {
+        for (int x = 0; x < game.getBoardSizeX(); ++x) {
+            if (y == 0 || y == game.getBoardSizeY() - 1 || x == 0 || x == game.getBoardSizeX() - 1) {
+                MacUILib_printf("#");
+            }
+            else {
+                // draw the food positions on the board
+                bool isFoodDrawn = false;
+                for (int i = 0; i < foodManager.getFoodList()->getSize(); ++i) {
+                    objPos foodPos;
+                    foodManager.getFoodList()->getElement(foodPos, i);
+                    if (x == foodPos.x && y == foodPos.y) {
+                        MacUILib_printf("%c", foodPos.getSymbol());
+                        isFoodDrawn = true;
+                        break; // Once food is drawn, no need to check other food positions
+                    }
+                }
 
-    objPosArrayList* playerBody = myPlayer->getPlayerPos(); 
-    // 'playerBody' of type array list is the snake body.
-    // assign it the player's position for its head.
-
-    objPos tempBody; // will be used when we start implementing getElement() down below. 
-
-    objPos foodPos; // the getter function for the food position requires an arg of type objPos, hence we make a temp.
-    myGM->getFoodPosition(foodPos);
-
-    for(int i=0;i< myGM->getBoardSizeY();i++)  //this nested for loop loops through the rows/columns
-    {
-        for(int j=0;j<myGM->getBoardSizeX();j++)  
-        {
-            drawn = false; //only becomes true when the player's symbol is printed.
-
-            for(int k = 0; k<playerBody->getSize();k++)
-            {
-                playerBody->getElement(tempBody, k); //get the element at index k from the list (snake body), puts it into 'tempBody'
-                if(j==tempBody.x && i==tempBody.y)
-                {
-                    MacUILib_printf("%c", tempBody.symbol);
-                    drawn=true; //drawn
-                    break;
+                // If no food was drawn at this position, check if it's a snake segment
+                if (!isFoodDrawn) {
+                    bool isBodySegment = false;
+                    for (int i = 0; i < snake.getPlayerPos()->getSize(); ++i) {
+                        objPos segment;
+                        snake.getPlayerPos()->getElement(segment, i);
+                        if (x == segment.x && y == segment.y) {
+                            MacUILib_printf("%c", segment.getSymbol());
+                            isBodySegment = true;
+                            break; // Once the segment is drawn, no need to check other segments
+                        }
+                    }
+                    // If neither food nor snake segment is at this position, draw a space
+                    if (!isBodySegment) {
+                        MacUILib_printf(" ");
+                    }
                 }
             }
-
-            if(drawn)continue; // makes sure that everything continues only when player symbol is drawn.
-
-            if(i==0 || i==myGM->getBoardSizeY()-1 || j==0 || j==myGM->getBoardSizeX()-1) //border control
-            {
-                MacUILib_printf("%c", '#'); //border
-            }
-
-            else if(j==foodPos.x && i==foodPos.y) //food implementation
-            {
-                MacUILib_printf("%c", foodPos.symbol); //recall that the food was already generated in RunLogic()
-            }
-            else
-            {
-                MacUILib_printf("%c", 32); //white spaces , ascii type: 32
-            
-            }
         }
-        MacUILib_printf("\n");
+        MacUILib_printf("\n"); // New line at the end of each row
     }
-    MacUILib_printf("Score: %d\n", myGM->getScore());
-    MacUILib_printf("Press space bar to quit\n");
+    MacUILib_printf("\nScore: %d\n", game.getScore()); // Print the score below the game board
 }
 
 void LoopDelay(void)
 {
-    MacUILib_Delay(DELAY_CONST); // 0.1s delay, changeable
+    MacUILib_Delay(DELAY_CONST); // 0.1s delay
 }
+
 
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
-    MacUILib_printf("GAME OVER! \nScore: %d\n", myGM->getScore());
+  
+    if (game.getExitFlagStatus())
+    {
+        MacUILib_printf("Thank you for playing. Your score: %d\n",game.getScore());
+    }
+
+    if (game.getLoseFlagStatus())
+    {
+        MacUILib_printf("You lose. Your score: %d\n", game.getScore());
+    }
     MacUILib_uninit();
-    delete myGM; //we instantiated this on the heap.
-    delete myPlayer; //we instantiated on the heap. 
 }
